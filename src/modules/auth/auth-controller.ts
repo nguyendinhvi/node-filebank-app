@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { ExtendRequest, ExtendResponse } from "../helper/express-extend";
-import { ResponseCodes } from "../helper/response-codes";
-import { auth } from "../middlewares/auth-middleware";
-import { UserAddModel } from "../models/schemas/user";
-import { UserService } from "../services/user.service";
+import { ExtendRequest, ExtendResponse } from "../../helpers/express-extend";
+import { ResponseCodes } from "../../helpers/response-codes";
+import { UserAddModel } from "../user/user.model";
+import { UserService } from "../user/user.service";
 
-export const register = async (
-  req: Request,
-  res: Response,
+export const signup = async (
+  req: ExtendRequest,
+  res: ExtendResponse,
   next: NextFunction
 ) => {
   try {
@@ -18,10 +17,10 @@ export const register = async (
 
     const payload = req.body as UserAddModel;
 
-    const u = await UserService.register(payload);
-    res.send(u);
+    const _user = await UserService.signup(payload);
+    res.success(_user);
   } catch (e) {
-    next(e);
+    res.error(e?.message);
   }
 };
 
@@ -33,7 +32,6 @@ export const login = async (
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log("errors :", errors.array());
       return res.error(ResponseCodes.error);
     }
 
@@ -54,10 +52,14 @@ export const authorize = async (
   next: NextFunction
 ) => {
   try {
-    console.log("zo");
-
     res.success(req.decodedToken);
   } catch (e) {
     next(e);
   }
+};
+
+export const AuthController = {
+  signup,
+  login,
+  authorize,
 };

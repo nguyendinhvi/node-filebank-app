@@ -2,7 +2,7 @@ import * as bcrypt from "bcrypt";
 import { check } from "express-validator/check";
 import { User } from "../models/schemas";
 
-export const userRules = {
+export const UserRules = {
   forRegister: [
     check("email")
       .trim()
@@ -10,12 +10,12 @@ export const userRules = {
       .isEmpty()
       .withMessage("Email is required field.")
       .isEmail()
-      .withMessage("Invalid email format")
-      .custom(async (email) => {
-        let u = await User.findOne({ where: { email } });
-        if (u) throw new Error("Email already exists");
-        return true;
-      }),
+      .withMessage("Invalid email format"),
+    // .custom(async (email) => {
+    //   let u = await User.findOne({ where: { email } });
+    //   if (u) throw new Error("Email already exists");
+    //   return true;
+    // }),
   ],
 
   forLogin: [

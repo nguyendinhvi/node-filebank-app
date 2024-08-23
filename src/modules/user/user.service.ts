@@ -1,12 +1,12 @@
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 
-import { Attributes } from "../models/includes";
-import { User, UserAttributes, UserViewModel } from "../models/schemas/user";
+import { Attributes } from "../../models/includes";
+import { User, UserAttributes, UserViewModel } from "./user.model";
 
-import { ResponseCodes } from "../helper/response-codes";
+import { ResponseCodes } from "../../helpers/response-codes";
 import { Response } from "express";
-import { ExtendResponse } from "../helper/express-extend";
+import { ExtendResponse } from "../../helpers/express-extend";
 
 export class UserService {
   private static readonly _saltRounds = 12;
@@ -17,16 +17,25 @@ export class UserService {
   //   }
 
   private static _user: any;
+
   static get user() {
     return UserService._user;
   }
 
-  static register = async (payload: UserAttributes) => {
+  static signup = async (payload: UserAttributes) => {
     try {
-      const hash = await bcrypt.hash(payload.password, this._saltRounds);
-      const u = await User.create({ ...payload, password: hash });
+      const _user_existed = await User.findOne({
+        where: { email: payload?.email },
+      });
+      console.log("_user_existed :", _user_existed);
+      if (_user_existed) {
+        throw new Error(ResponseCodes.email_account_already_exists);
+      }
 
-      return u as UserViewModel;
+      const hash = await bcrypt.hash(payload.password, this._saltRounds);
+      let _user = await User.create({ ...payload, password: hash });
+      delete _user?.password;
+      return _user;
     } catch (e) {
       throw e;
     }

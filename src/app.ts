@@ -13,7 +13,7 @@ import { databaseMigration } from "./migrations/migration";
 
 import routes from "./routes";
 import { auth } from "./middlewares/auth-middleware";
-import { customResponse } from "./helper/express-extend";
+import { customResponse } from "./helpers/express-extend";
 
 const errorHandler: ErrorRequestHandler = (
   err,

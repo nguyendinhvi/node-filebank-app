@@ -1,6 +1,7 @@
 export enum ResponseCodes {
   ok = "ok",
   error = "error",
+  email_account_already_exists = "email_account_already_exists",
   unauthorized = "unauthorized",
   user_not_found = "user_not_found",
   token_missing_or_invalid = "token_missing_or_invalid",

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { IncomingHttpHeaders } from "http";
-import { ExtendRequest } from "../helper/express-extend";
-import { ErrorMessages, ResponseCodes } from "../helper/response-codes";
-import { UserService } from "../services/user.service";
+import { ExtendRequest } from "../helpers/express-extend";
+import { ErrorMessages, ResponseCodes } from "../helpers/response-codes";
+import { UserService } from "../modules/user/user.service";
 import { publicPaths } from "./public-path";
 
 export const isPublicPath = (req: Request): boolean => {
