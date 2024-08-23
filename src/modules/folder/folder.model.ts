@@ -1,21 +1,23 @@
 import { Model, DataTypes } from "sequelize";
+import { v4 as uuidv4 } from "uuid";
 
 interface FolderAttributes {
-  id?: number;
+  id?: string;
   name: string;
   level: number;
   user_id?: string;
+  parent_id?: string;
 }
 
 export interface FolderAddModel {
   name: string;
   user_id: string;
-  parent_id?: number;
+  parent_id?: string;
   level: number;
 }
 
 export class Folder extends Model<FolderAttributes, FolderAttributes> {
-  declare id: number;
+  declare id: string;
 
   declare name: string;
 
@@ -25,16 +27,17 @@ export class Folder extends Model<FolderAttributes, FolderAttributes> {
     this.init(
       {
         id: {
-          autoIncrement: true,
+          type: DataTypes.UUID,
+          allowNull: false,
           primaryKey: true,
-          type: DataTypes.BIGINT.UNSIGNED,
+          defaultValue: () => uuidv4(),
         },
         name: DataTypes.STRING,
         level: DataTypes.STRING,
       },
       {
         sequelize, // We need to pass the connection instance
-        tableName: "folder", // We need to choose the table name in database
+        tableName: "folders", // We need to choose the table name in database
         modelName: "folder",
         timestamps: true,
         paranoid: true,

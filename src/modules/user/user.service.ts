@@ -1,12 +1,12 @@
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 
-import { Attributes } from "../models/includes";
-import { User, UserAttributes, UserViewModel } from "../models/schemas/user";
+import { Attributes } from "../../models/includes";
+import { User, UserAttributes, UserViewModel } from "./user.model";
 
-import { ResponseCodes } from "../helper/response-codes";
+import { ResponseCodes } from "../../helpers/response-codes";
 import { Response } from "express";
-import { ExtendResponse } from "../helper/express-extend";
+import { ExtendResponse } from "../../helpers/express-extend";
 
 export class UserService {
   private static readonly _saltRounds = 12;

@@ -2,7 +2,7 @@ import * as bcrypt from "bcrypt";
 import { check } from "express-validator/check";
 import { User } from "../models/schemas";
 
-export const userRules = {
+export const UserRules = {
   forRegister: [
     check("email")
       .trim()

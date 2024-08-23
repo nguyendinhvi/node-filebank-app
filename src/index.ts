@@ -8,6 +8,6 @@ export const config: any = process.env;
     await app.init();
     app.start(config.PORT);
   } catch (error) {
-    console.log("error", error);
+    console.log("LISTEN ERROR", error);
   }
 })();

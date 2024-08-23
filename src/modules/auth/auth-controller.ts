@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { ExtendRequest, ExtendResponse } from "../helper/express-extend";
-import { ResponseCodes } from "../helper/response-codes";
-import { auth } from "../middlewares/auth-middleware";
-import { UserAddModel } from "../models/schemas/user";
-import { UserService } from "../services/user.service";
+import { ExtendRequest, ExtendResponse } from "../../helpers/express-extend";
+import { ResponseCodes } from "../../helpers/response-codes";
+import { auth } from "../../middlewares/auth-middleware";
+import { UserAddModel } from "../user/user.model";
+import { UserService } from "../user/user.service";
 
 export const register = async (
   req: Request,
@@ -60,4 +60,10 @@ export const authorize = async (
   } catch (e) {
     next(e);
   }
+};
+
+export const AuthController = {
+  register,
+  login,
+  authorize,
 };

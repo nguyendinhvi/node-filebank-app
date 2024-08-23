@@ -1,3 +1,3 @@
-export { User } from "./user";
-export { File } from "./file";
-export { Folder } from "./folder";
+export { User } from "../../modules/user/user.model";
+export { File } from "../../modules/file/file.model";
+export { Folder } from "../../modules/folder/folder.model";
