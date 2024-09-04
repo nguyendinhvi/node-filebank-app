@@ -27,35 +27,29 @@ export class UserService {
       const _user_existed = await User.findOne({
         where: { email: payload?.email },
       });
-      console.log("_user_existed :", _user_existed);
       if (_user_existed) {
         throw new Error(ResponseCodes.email_account_already_exists);
       }
 
       const hash = await bcrypt.hash(payload.password, this._saltRounds);
-      let _user = await User.create({ ...payload, password: hash });
+      const _user = await User.create({ ...payload, password: hash });
       delete _user?.password;
+
       return _user;
     } catch (e) {
       throw e;
     }
   };
 
-  static login = async (
-    email: string,
-    password: string,
-    res: ExtendResponse
-  ) => {
+  static login = async (email: string, password: string) => {
     try {
       let user: any = await User.findOne({
         where: { email },
-        // attributes: Attributes.user,
-        // include: [Includes.clazz],
       });
-      if (!user) return res.error(ResponseCodes.user_not_found);
+      if (!user) throw new Error(ResponseCodes.email_or_password_is_wrong);
 
       const compare = await bcrypt.compare(password, user.password);
-      if (!compare) return res.error(ResponseCodes.email_or_password_is_wrong);
+      if (!compare) throw new Error(ResponseCodes.email_or_password_is_wrong);
 
       const userJson = user.toJSON();
       delete userJson.password;
@@ -66,8 +60,8 @@ export class UserService {
           algorithm: "HS256",
         }),
       };
-    } catch (error) {
-      return error;
+    } catch (e) {
+      throw e;
     }
   };
 

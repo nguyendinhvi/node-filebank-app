@@ -24,25 +24,23 @@ export const signup = async (
   }
 };
 
-export const login = async (
-  req: ExtendRequest,
-  res: ExtendResponse,
-  next: NextFunction
-) => {
+export const login = async (req: ExtendRequest, res: ExtendResponse) => {
   try {
     const errors = validationResult(req);
+    console.log("errors :", errors);
     if (!errors.isEmpty()) {
       return res.error(ResponseCodes.error);
     }
 
     const { email, password } = req.body;
 
-    const data: any = await UserService.login(email, password, res as any);
+    const data: any = await UserService.login(email, password);
     req.decodedToken = await UserService.verifyToken(data.token);
 
     res.success(data);
   } catch (e) {
-    next(e);
+    console.log("e :", e);
+    res.error(e.message);
   }
 };
 
