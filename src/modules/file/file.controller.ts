@@ -1,22 +1,32 @@
 import { NextFunction } from "express";
 import { ExtendRequest, ExtendResponse } from "../../helpers/express-extend";
-import { ResponseCodes } from "../../helpers/response-codes";
+import { ResponseCode } from "../../helpers/response-codes";
 import { FileService } from "./file.service";
+import { sendError } from "../../helpers/api";
 
-export const upload = async (req: ExtendRequest, res: ExtendResponse, next: NextFunction) => {
+export const upload = async (
+  req: ExtendRequest,
+  res: ExtendResponse,
+  next: NextFunction
+) => {
   try {
     const { user } = req.decodedToken ?? {};
     const fileUploaded = await FileService.upload({
-      // ...req.body,
+      ...req.body,
       user_id: user.id,
       file: req.file,
     });
     res.success(fileUploaded);
   } catch (e) {
-    res.error(ResponseCodes.error);
+    res.error(ResponseCode.error);
   }
 };
-export const getMyFiles = async (req: ExtendRequest, res: ExtendResponse, next: NextFunction) => {
+
+export const getMyFiles = async (
+  req: ExtendRequest,
+  res: ExtendResponse,
+  next: NextFunction
+) => {
   try {
     const { user } = req.decodedToken ?? {};
     const myFiles = await FileService.getMyFiles({
@@ -25,8 +35,42 @@ export const getMyFiles = async (req: ExtendRequest, res: ExtendResponse, next: 
     });
     res.success(myFiles);
   } catch (e) {
-    res.error(ResponseCodes.error);
+    res.error(ResponseCode.error);
   }
 };
 
-export const fileController = { upload, getMyFiles };
+export const getFilesByFolderId = async (
+  req: ExtendRequest,
+  res: ExtendResponse,
+  next: NextFunction
+) => {
+  try {
+    const files = await FileService.getFilesByFolderId({
+      folder_id: req.params?.id,
+    });
+    res.success(files);
+  } catch (e) {
+    res.error(ResponseCode.error);
+  }
+};
+
+export const deleteById = async (
+  req: ExtendRequest,
+  res: ExtendResponse,
+  next: NextFunction
+) => {
+  try {
+    const { user } = req.decodedToken ?? {};
+    await FileService.deleteById(req.params?.id, req.decodedToken?.user?.id);
+    res.success(ResponseCode.delete_success);
+  } catch (e) {
+    sendError(res, e);
+  }
+};
+
+export const fileController = {
+  upload,
+  getMyFiles,
+  deleteById,
+  getFilesByFolderId,
+};

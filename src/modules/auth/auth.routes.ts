@@ -6,16 +6,10 @@ import { AuthController } from "./auth-controller";
 const AuthRouter = express.Router();
 
 // POST
-AuthRouter.route("/register").post(
-  UserRules.forRegister,
-  AuthController.register
-);
-AuthRouter.route("/login").post(
-  UserRules.forLogin,
-  AuthController.login as any
-);
+AuthRouter.route("/signup").post(UserRules.forRegister, AuthController.register);
+AuthRouter.route("/login").post(UserRules.forLogin, AuthController.login);
 
 // GET
-AuthRouter.route("/").get(auth, AuthController.authorize as any);
+AuthRouter.route("/").get(auth, AuthController.authorize);
 
 export default AuthRouter;

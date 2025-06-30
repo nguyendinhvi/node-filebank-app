@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Transaction, TransactionOptions } from "sequelize";
 import { mySequelize } from "../migrations/migration";
-import { ErrorMessages, ResponseCodes } from "./response-codes";
+import { ErrorMessages, ResponseCode } from "./response-codes";
 
 export interface ExtendRequest extends Request {
   decodedToken?: any;
@@ -10,7 +10,7 @@ export interface ExtendRequest extends Request {
 
 export interface ExtendResponse extends Response {
   success(data: any): ExtendResponse;
-  error(code?: ResponseCodes, status?: number): ExtendResponse;
+  error(code?: ResponseCode, status?: number): ExtendResponse;
 }
 
 export const customResponse = async (
@@ -37,20 +37,20 @@ export const customResponse = async (
       await anyRes.transaction.commit();
     }
     return res.status(200).json({
-      code: ResponseCodes.ok,
+      code: ResponseCode.ok,
       success: true,
       data,
     });
   };
 
-  anyRes.error = async (code: ResponseCodes, status: number) => {
+  anyRes.error = async (code: ResponseCode, status: number) => {
     if (anyRes.transaction) {
       await anyRes.transaction.rollback();
     }
     return res.status(status || 500).json({
-      code: ResponseCodes[code] || ResponseCodes[ResponseCodes.error],
+      code: ResponseCode[code] || ResponseCode[ResponseCode.error],
       success: false,
-      message: ErrorMessages.get(code || ResponseCodes.error),
+      message: ErrorMessages.get(code || ResponseCode.error),
     });
   };
 

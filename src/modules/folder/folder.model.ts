@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { Model, DataTypes } from "sequelize";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,10 +28,10 @@ export class Folder extends Model<FolderAttributes, FolderAttributes> {
     this.init(
       {
         id: {
-          type: DataTypes.UUID,
+          type: DataTypes.STRING,
           allowNull: false,
           primaryKey: true,
-          defaultValue: () => uuidv4(),
+          defaultValue: () => nanoid(8),
         },
         name: DataTypes.STRING,
         level: DataTypes.STRING,

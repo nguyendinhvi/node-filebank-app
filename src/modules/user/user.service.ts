@@ -4,9 +4,13 @@ import * as jwt from "jsonwebtoken";
 import { Attributes } from "../../models/includes";
 import { User, UserAttributes, UserViewModel } from "./user.model";
 
-import { ResponseCodes } from "../../helpers/response-codes";
+import { ResponseCode } from "../../helpers/response-codes";
 import { Response } from "express";
 import { ExtendResponse } from "../../helpers/express-extend";
+import { error } from "console";
+import { throwError } from "../../helpers/api";
+import { File } from "../file/file.model";
+import { col, fn } from "sequelize";
 
 export class UserService {
   private static readonly _saltRounds = 12;
@@ -43,10 +47,11 @@ export class UserService {
         // attributes: Attributes.user,
         // include: [Includes.clazz],
       });
-      if (!user) return res.error(ResponseCodes.user_not_found);
+      // if (!user) return  res.error(ResponseCode.user_not_found);
+      if (!user) throw ResponseCode.user_not_found;
 
       const compare = await bcrypt.compare(password, user.password);
-      if (!compare) return res.error(ResponseCodes.email_or_password_is_wrong);
+      if (!compare) throwError(ResponseCode.email_or_password_is_wrong, 402);
 
       const userJson = user.toJSON();
       delete userJson.password;
@@ -58,20 +63,17 @@ export class UserService {
         }),
       };
     } catch (error) {
+      throw error;
       return error;
     }
   };
 
   static verifyToken = async (token: string) => {
     try {
-      return await jwt.verify(
-        token,
-        this._jwtSecret,
-        async (err, decoded: any) => {
-          if (err) return false;
-          if (decoded) return decoded;
-        }
-      );
+      return jwt.verify(token, this._jwtSecret, async (err, decoded: any) => {
+        if (err) return false;
+        if (decoded) return decoded;
+      });
     } catch (e) {
       return false;
     }
@@ -79,6 +81,19 @@ export class UserService {
 
   static getUserById = async (id: string) => {
     return await User.findOne({ where: { id }, attributes: Attributes.user });
+  };
+
+  static getProfileById = async (id: string) => {
+    try {
+      await User.findOne({ where: { id }, attributes: Attributes.user });
+      const _profile = await File.findAll({
+        where: { user_id: id },
+        attributes: [[fn("SUM", col("size")), "totalSize"]],
+        raw: true,
+      });
+
+      return _profile;
+    } catch (error) {}
   };
 
   static sync = async () => {};

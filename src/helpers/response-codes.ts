@@ -1,4 +1,4 @@
-export enum ResponseCodes {
+export enum ResponseCode {
   ok = "ok",
   error = "error",
   unauthorized = "unauthorized",
@@ -7,12 +7,15 @@ export enum ResponseCodes {
   missing_signature_or_address = "missing_signature_or_address",
   email_or_password_is_wrong = "email_or_password_is_wrong",
   create_success = "create_success",
+  delete_success = "delete_success",
+  forbidden = "forbidden",
 }
 
 export const ErrorMessages = new Map([
-  [ResponseCodes.error, "Something error during process the request"],
+  [ResponseCode.error, "Something error during process the request"],
   [
-    ResponseCodes.missing_signature_or_address,
+    ResponseCode.missing_signature_or_address,
     "Request should have signature and public_addres",
   ],
+  [ResponseCode.email_or_password_is_wrong, "Email or password is wrong"],
 ]);

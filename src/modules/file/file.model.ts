@@ -1,8 +1,10 @@
+import { nanoid } from "nanoid";
 import { Model, DataTypes } from "sequelize";
 import { v4 as uuidv4 } from "uuid";
 
 interface FileAttributes {
   id?: string;
+  public_id?: string;
   original_filename: string;
   url: string;
   secure_url: string;
@@ -29,6 +31,7 @@ export interface FileAddModel {
 
 export class File extends Model<FileAttributes, FileAttributes> {
   declare id: string;
+  declare public_id: string;
   declare original_filename: string;
   declare url: string;
   declare secure_url: string;
@@ -50,11 +53,12 @@ export class File extends Model<FileAttributes, FileAttributes> {
     this.init(
       {
         id: {
-          type: DataTypes.UUID,
+          type: DataTypes.STRING,
           allowNull: false,
           primaryKey: true,
-          defaultValue: () => uuidv4(),
+          defaultValue: () => nanoid(8),
         },
+        public_id: DataTypes.STRING,
         original_filename: DataTypes.STRING,
         url: DataTypes.STRING,
         secure_url: DataTypes.STRING,
